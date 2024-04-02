@@ -1,3 +1,6 @@
+make_vm:
+	python -m venv venv
+	
 install:
 	venv\Scripts\activate \
 	pip install --upgrade pip &&\
