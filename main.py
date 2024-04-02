@@ -1,8 +1,7 @@
 from PyQt6.QtWidgets import QApplication, QFileDialog, QWidget, QVBoxLayout, QTabWidget, QMainWindow
 from PyQt6.QtGui import QAction
 import pandas as pd
-from models import pandas_dataset
-from windows import base, tableWindow
+from windows import calculateWindow, tableWindow
 import sys
 import os
 
@@ -13,8 +12,8 @@ class stat_app(QMainWindow):
         self.file = None
         self.df = None
         self.setWindowTitle("Statistical calculator")
-        self.window_width, self.window_height = 700, 900
-        self.resize(self.window_width, self.window_height)
+        self.setGeometry(100, 100, 600, 400) 
+        self.showMaximized() 
 
         #sets the widgets in the window
         self.mainFrame = QWidget()
@@ -29,12 +28,11 @@ class stat_app(QMainWindow):
         
         self.setCentralWidget(self.mainFrame)
         self.create_menu()
-        self.calculateTab()
 
     def calculateTab(self):
         "Sets the GUI of the Home page"
-        fundament = base()
-        return fundament
+        self.fundament = calculateWindow(self)
+        return self.fundament
 
 
     def showTableTab(self):
@@ -42,18 +40,10 @@ class stat_app(QMainWindow):
         self.newTabelWindow = tableWindow(self)
         self.newTabelWindow.setWindowTitle("UIWindow")
         if self.df is not None:
-            self.loadDataset()
+            self.newTabelWindow.loadDataset(self.df)
         return self.newTabelWindow
 
-    def loadDataset(self):
-        self.newTabelWindow.dataTable.resize(800, 500)
-        self.newTabelWindow.dataTable.horizontalHeader().setStretchLastSection(True)
-        self.newTabelWindow.dataTable.setAlternatingRowColors(True)
-        self.model = pandas_dataset(self.df)   
 
-        self.newTabelWindow.dataTable.setModel(self.model)
-
-        self.show()
 
     def create_menu(self):
         menu = self.menuBar()
@@ -77,7 +67,10 @@ class stat_app(QMainWindow):
         )
         df = pd.read_csv(response[0])
         self.df = df
-        self.loadDataset()
+
+        self.newTabelWindow.loadDataset(self.df)
+        self.fundament.updatedf(self.df)
+        self.fundament.toolbox()
 
 
 

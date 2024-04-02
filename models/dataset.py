@@ -1,6 +1,5 @@
 from PyQt6 import QtCore
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout
 
 class pandas_dataset(QtCore.QAbstractTableModel):
     def __init__(self, data):

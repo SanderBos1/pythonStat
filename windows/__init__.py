@@ -1,2 +1,2 @@
-from windows.base import base
-from windows.base import tableWindow
+from windows.calculateWindow import calculateWindow
+from windows.tableWindow import tableWindow
