@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QApplication, QFileDialog, QMainWindow
+from PyQt6.QtWidgets import QApplication, QFileDialog, QWidget, QVBoxLayout, QTabWidget, QMainWindow
 from PyQt6.QtGui import QAction
 import pandas as pd
 from models import pandas_dataset
@@ -12,31 +12,38 @@ class stat_app(QMainWindow):
         super().__init__()
         self.file = None
         self.df = None
-        self.newTabelWindow = None
         self.setWindowTitle("Statistical calculator")
         self.window_width, self.window_height = 700, 900
         self.resize(self.window_width, self.window_height)
+
+        #sets the widgets in the window
+        self.mainFrame = QWidget()
+        self.layout = QVBoxLayout()
+        tabs = QTabWidget()
+        tabs.setTabPosition(QTabWidget.TabPosition.West)
+        tabs.addTab(self.calculateTab(), "calculate")
+        tabs.addTab(self.showTableTab(), "dataset")
+        self.layout.addWidget(tabs)
+        self.mainFrame.setLayout(self.layout)
+
+        
+        self.setCentralWidget(self.mainFrame)
         self.create_menu()
+        self.calculateTab()
 
-        self.calculateUI()
-
-    def calculateUI(self):
+    def calculateTab(self):
         "Sets the GUI of the Home page"
-        self.fundament = base()
-        self.setCentralWidget(self.fundament)
-        self.fundament.CPSBTN.clicked.connect(self.showTable)
-        self.show()
+        fundament = base()
+        return fundament
 
 
-    def showTable(self):
+    def showTableTab(self):
         "Sets the GUI of the page that displays the loaded dataset"
         self.newTabelWindow = tableWindow(self)
-        self.setWindowTitle("UIWindow")
-        self.setCentralWidget(self.newTabelWindow)
-        self.newTabelWindow.ToolsBTN.clicked.connect(self.calculateUI)
+        self.newTabelWindow.setWindowTitle("UIWindow")
         if self.df is not None:
             self.loadDataset()
-
+        return self.newTabelWindow
 
     def loadDataset(self):
         self.newTabelWindow.dataTable.resize(800, 500)
@@ -77,4 +84,5 @@ class stat_app(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     my_app = stat_app()
+    my_app.show()
     sys.exit(app.exec())
