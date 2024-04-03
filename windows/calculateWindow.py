@@ -1,42 +1,48 @@
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QComboBox, QLabel
-from PyQt6.QtGui import QAction
-from statFunctions import mean
-from pandas.api.types import is_numeric_dtype
+from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QLabel, QToolBar, QMenu, QPushButton
+from customWidgets import disiplayCalculationElement, dragLabel
+from statFunctions import mean, variance
 
 class calculateWindow(QWidget):
-    def __init__(self, parent=None):
-        super(calculateWindow, self).__init__(parent)
-            
-        self.df = None
-        menuLayout = QVBoxLayout()
-        answerLayout = QVBoxLayout()
-        self.columnDropDown = QComboBox()
-        self.calculatedAnswer = QLabel()
-        self.columnDropDown.currentTextChanged.connect(self.meanCalculator)
-
-        menuLayout.addWidget(self.columnDropDown)
-        answerLayout.addWidget(self.calculatedAnswer)
-        pageLayout = QHBoxLayout()
-        pageLayout.addLayout(menuLayout)    
-        pageLayout.addLayout(answerLayout)
-
-        self.setLayout(pageLayout)
-
-
-    def updatedf(self, df):
+    def __init__(self, df, *args, **kwargs):
+        super(calculateWindow, self).__init__(*args, **kwargs)
         self.df = df
 
-    
-    def toolbox(self):
-        self.columnDropDown.clear()
-        for column in self.df.columns:
-            self.columnDropDown.addItem(column)
-        self.show()
+        self.toolsLayout = QVBoxLayout()
+        self.explorationLayout = QGridLayout()
+        self.createdWidgetLayout = QHBoxLayout()
+        self.columnLayout = QVBoxLayout()
+        pageLayout = QHBoxLayout()
 
-    def meanCalculator(self, s):
-        if self.df is not None and s in self.df.columns and is_numeric_dtype(self.df[s]):
-            answer = mean(self.df[s])
-        else:
-            answer = "This column is not numerical"
-        self.calculatedAnswer.setText(str(answer))
-    
+        pageLayout.addLayout(self.columnLayout)
+        self.toolsLayout.addLayout(self.explorationLayout)
+        pageLayout.addLayout(self.toolsLayout)
+        pageLayout.addLayout(self.createdWidgetLayout)    
+
+        self.setLayout(pageLayout)
+        self.createToolbar()
+        self.showColumns()
+
+
+    def createToolbar(self):
+
+        meanButton = QPushButton("Mean")
+        meanButton.clicked.connect(lambda: self.addLabel("mean", mean))
+
+        VarianceButton = QPushButton("Variance")
+        VarianceButton.clicked.connect(lambda: self.addLabel("Variance", variance))
+
+
+        self.explorationLayout.addWidget(meanButton)
+        self.explorationLayout.addWidget(VarianceButton)
+
+    def showColumns(self):
+        if self.df is not None:
+            for column in self.df.columns:
+                    label = dragLabel(str(column))
+                    self.columnLayout.addWidget(label)
+
+    def addLabel(self, name, function):
+        label = disiplayCalculationElement(name, self.df, function)
+        self.createdWidgetLayout.addWidget(label)
+
+

@@ -18,20 +18,17 @@ class stat_app(QMainWindow):
         #sets the widgets in the window
         self.mainFrame = QWidget()
         self.layout = QVBoxLayout()
-        tabs = QTabWidget()
-        tabs.setTabPosition(QTabWidget.TabPosition.West)
-        tabs.addTab(self.calculateTab(), "calculate")
-        tabs.addTab(self.showTableTab(), "dataset")
-        self.layout.addWidget(tabs)
+
         self.mainFrame.setLayout(self.layout)
 
-        
+        self.createTabs()
         self.setCentralWidget(self.mainFrame)
         self.create_menu()
 
+        
     def calculateTab(self):
         "Sets the GUI of the Home page"
-        self.fundament = calculateWindow(self)
+        self.fundament = calculateWindow(self.df)
         return self.fundament
 
 
@@ -42,7 +39,13 @@ class stat_app(QMainWindow):
         if self.df is not None:
             self.newTabelWindow.loadDataset(self.df)
         return self.newTabelWindow
-
+    
+    def createTabs(self):
+        self.tabs = QTabWidget()
+        self.tabs.setTabPosition(QTabWidget.TabPosition.West)
+        self.tabs.addTab(self.calculateTab(), "calculate")
+        self.tabs.addTab(self.showTableTab(), "dataset")
+        self.layout.addWidget(self.tabs)
 
 
     def create_menu(self):
@@ -67,10 +70,12 @@ class stat_app(QMainWindow):
         )
         df = pd.read_csv(response[0])
         self.df = df
+        self.layout.removeWidget(self.tabs)
+        self.tabs.deleteLater()
+        self.tabs = None
+        self.createTabs()
 
-        self.newTabelWindow.loadDataset(self.df)
-        self.fundament.updatedf(self.df)
-        self.fundament.toolbox()
+
 
 
 

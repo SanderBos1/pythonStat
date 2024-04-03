@@ -1,1 +1,1 @@
-from statFunctions.standardFunctions import mean
+from statFunctions.standardFunctions import mean, variance
