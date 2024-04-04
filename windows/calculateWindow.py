@@ -14,6 +14,8 @@ class calculateWindow(QWidget):
 
         self.createdWidgets = []
 
+        columnLabel = QLabel("Columns")
+        self.columnLayout.addWidget(columnLabel)
         pageLayout.addLayout(self.toolsLayout)
         pageLayout.addLayout(self.columnLayout)
         pageLayout.addLayout(self.createdDasboardLayout)    
@@ -26,16 +28,20 @@ class calculateWindow(QWidget):
 
     def getState(self):
         """
-        Returns a list that corresponds to all the widgets that a user has created, used to save the state
+        Returns a list that corresponds to all the widgets that a user has created and their state data
+        This list is used to save the user state
         """
-        return self.createdWidgets
+        stateInformation = []
+        for widget in self.createdWidgets:
+            stateInformation.append(widget.getData())
+        return stateInformation
     
     def setState(self, createdWidgetsList):
         """
         Creates a state from a list of dictionaries that corresponds to the previous created widgets
         """
         for createdWidget in createdWidgetsList:
-            self.addLabel(createdWidget['name'], createdWidget['function'])
+            self.addLabel(createdWidget['text'], createdWidget['function'], createdWidget['column'], createdWidget['answer'])
 
     def createDescriptiveButtons(self):
         """
@@ -94,14 +100,14 @@ class calculateWindow(QWidget):
                     self.columnLayout.addWidget(label)
         self.columnLayout.addStretch()
 
-    def addLabel(self, name, function):
+    def addLabel(self, name, function, column = "No column selected", answer = "No column selected"):
 
         """
         Adds a label widget to the drawing frame which accept drag events
         On drag events it calculates it associated function on the column it receives.
         
         """
-        label = disiplayCalculationElement(name, function)
-        self.createdWidgets.append({"name":name, "function": function})
+        label = disiplayCalculationElement(name, function, column, answer)
+        self.createdWidgets.append(label)
         self.createdDasboardLayout.addWidget(label)
 

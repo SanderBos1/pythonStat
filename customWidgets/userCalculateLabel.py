@@ -13,7 +13,7 @@ class disiplayCalculationElement(QWidget):
 
         Accepts drag events
     """
-    def __init__(self, text, function, *args, **kwargs):
+    def __init__(self, text, function, column, answer,  *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setAcceptDrops(True)
 
@@ -25,13 +25,15 @@ class disiplayCalculationElement(QWidget):
 
         self.function = function
         self.text = text
+        self.column = column
+        self.answer = answer
 
         self.widgetLayout = QGridLayout()
 
         functionLabel = QLabel(self.text)
 
-        self.columnLabel = QLabel("No column selected")
-        self.calculationAnswerLabel = QLabel("No column selected")
+        self.columnLabel = QLabel(self.column )
+        self.calculationAnswerLabel = QLabel(self.answer)
 
         deleteButton = QPushButton()
         deleteButton.setText("Remove")      
@@ -47,6 +49,16 @@ class disiplayCalculationElement(QWidget):
 
         self.setLayout(self.widgetLayout)
 
+    def getData(self):
+        """ 
+        Returns all information needed to recreate the object
+        """
+        return {
+            "function":self.function, 
+            "text": self.text,
+            "column":self.column, 
+            "answer": self.answer}
+    
     def deleteElement(self):
         """Function to delete the widget"""
         self.deleteLater()
@@ -62,9 +74,11 @@ class disiplayCalculationElement(QWidget):
         self.widgetLayout.removeWidget(self.calculationAnswerLabel)
         self.widgetLayout.removeWidget(self.columnLabel)
 
-        self.columnLabel = QLabel(widget.getText())
-
-        self.calculationAnswerLabel = QLabel(str(self.function(widget.getText())))
+        self.column = widget.getText()
+        self.answer = str(self.function(widget.getText()))
+        
+        self.columnLabel = QLabel(self.column)
+        self.calculationAnswerLabel = QLabel(self.answer)
 
         self.widgetLayout.addWidget(self.columnLabel)
         self.widgetLayout.addWidget(self.calculationAnswerLabel)
