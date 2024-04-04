@@ -24,10 +24,11 @@ class disiplayCalculationElement(QWidget):
         self.setFixedHeight(height)
 
         self.function = function
+        self.text = text
 
         self.widgetLayout = QGridLayout()
 
-        functionLabel = QLabel(text)
+        functionLabel = QLabel(self.text)
 
         self.columnLabel = QLabel("No column selected")
         self.calculationAnswerLabel = QLabel("No column selected")

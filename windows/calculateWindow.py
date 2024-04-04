@@ -12,15 +12,30 @@ class calculateWindow(QWidget):
         self.columnLayout = QVBoxLayout()
         pageLayout = QHBoxLayout()
 
+        self.createdWidgets = []
+
         pageLayout.addLayout(self.toolsLayout)
         pageLayout.addLayout(self.columnLayout)
         pageLayout.addLayout(self.createdDasboardLayout)    
         pageLayout.addStretch()
 
+
         self.setLayout(pageLayout)
         self.createDescriptiveButtons()
         self.showColumns()
 
+    def getState(self):
+        """
+        Returns a list that corresponds to all the widgets that a user has created, used to save the state
+        """
+        return self.createdWidgets
+    
+    def setState(self, createdWidgetsList):
+        """
+        Creates a state from a list of dictionaries that corresponds to the previous created widgets
+        """
+        for createdWidget in createdWidgetsList:
+            self.addLabel(createdWidget['name'], createdWidget['function'])
 
     def createDescriptiveButtons(self):
         """
@@ -87,6 +102,6 @@ class calculateWindow(QWidget):
         
         """
         label = disiplayCalculationElement(name, function)
+        self.createdWidgets.append({"name":name, "function": function})
         self.createdDasboardLayout.addWidget(label)
-
 
