@@ -4,3 +4,4 @@ pylint
 PyQt6
 numpy
 pandas
+scipy

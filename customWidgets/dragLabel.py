@@ -5,7 +5,9 @@ from PyQt6.QtGui import QDrag, QPixmap
 
 
 class dragLabel(QLabel):
-
+    """
+    Defines a label that is dragable
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setGeometry(40, 400, 100, 100)

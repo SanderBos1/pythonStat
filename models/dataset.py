@@ -4,7 +4,7 @@ from PyQt6.QtCore import Qt
 class pandas_dataset(QtCore.QAbstractTableModel):
     def __init__(self, data):
         super(pandas_dataset, self).__init__()
-        self._data = data
+        self._data = data.getDataset()
 
     #loads the data, select the row and column from the dataframe
     def data(self, index, role):

@@ -1,1 +1,1 @@
-from statFunctions.standardFunctions import mean, variance
+from statFunctions.descriptiveStatFunction import mean, variance, median, mode, standardDeviation, statCount, statMin, statMax

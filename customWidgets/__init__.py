@@ -1,2 +1,3 @@
 from customWidgets.userCalculateLabel import disiplayCalculationElement
 from customWidgets.dragLabel import dragLabel
+from customWidgets.titleBar import CustomTitleBar
