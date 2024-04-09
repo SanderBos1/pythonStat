@@ -1,2 +1,0 @@
-from windows.calculateWindow import calculateWindow
-from windows.tableWindow import tableWindow

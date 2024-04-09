@@ -1,10 +1,10 @@
 from PyQt6.QtWidgets import QLabel
-from PyQt6.QtCore import QMimeData, Qt, pyqtSignal
+from PyQt6.QtCore import QMimeData, Qt
 from PyQt6.QtGui import QDrag, QPixmap
 
 
 
-class dragLabel(QLabel):
+class datasetColumnLabel(QLabel):
     """
     Defines a label that is dragable
     """

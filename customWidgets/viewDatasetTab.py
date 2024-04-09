@@ -1,13 +1,13 @@
 from PyQt6.QtWidgets import  QWidget, QVBoxLayout, QHBoxLayout, QTableView
 from models import pandas_dataset
+import classes
 
 
-class tableWindow(QWidget):
+class viewDatasetWidget(QWidget):
     def __init__(self, parent=None):
-        super(tableWindow, self).__init__(parent)
+        super(viewDatasetWidget, self).__init__(parent)
 
         self.dataTable = QTableView()
-
         menuLayout = QVBoxLayout()
 
         tableLayout =  QHBoxLayout()
@@ -18,10 +18,11 @@ class tableWindow(QWidget):
         pageLayout.addLayout(menuLayout)
         pageLayout.addLayout(tableLayout)
         self.setLayout(pageLayout)
+        self.loadDataset()
         
-    def loadDataset(self, df):
+    def loadDataset(self):
         self.dataTable.setAlternatingRowColors(True)
-        self.model = pandas_dataset(df)   
+        self.model = pandas_dataset(classes.selectedDataset)   
 
         self.dataTable.setModel(self.model)
 

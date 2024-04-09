@@ -3,27 +3,28 @@ from PyQt6.QtGui import QAction
 from PyQt6.QtCore import Qt
 import pandas as pd
 import pickle
-from windows import calculateWindow, tableWindow
 import sys
 import os
-from customWidgets import CustomTitleBar
+from customWidgets import CustomTitleBar, userDashboardCreationPage, viewDatasetWidget
 import classes
 from classes import userDataset
 
 
-#declares the global dataset variable
 
 
-# Subclass QMainWindow to customize your application's main window
 class stat_app(QMainWindow):
+    """
+    Creates the main application window.
+    """
     def __init__(self):
         super().__init__()
 
 
-
-        self.textEdit = QTextEdit()
-        
         self.setWindowTitle("Stat program")
+
+        # makes the window frameless
+
+
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
         self.titleBar = CustomTitleBar(self)
         mainApp = QWidget()
@@ -39,31 +40,38 @@ class stat_app(QMainWindow):
         mainApp.setLayout(mainAppLayout)
 
         self.setCentralWidget(mainApp)
-        self.setGeometry(100, 100, 600, 400) 
         self.showMaximized() 
 
 
-        #sets the widgets in the window
-
+        #Creates the window menu of the page
         self.create_menu()
 
 
         
     def calculateTab(self):
-        "Sets the GUI of the Home page"
-        self.fundament = calculateWindow()
+        """
+        Creates the tab where the widgets that user create are placed.
+        """
+        self.fundament = userDashboardCreationPage()
         return self.fundament
 
 
     def showTableTab(self):
-        "Sets the GUI of the page that displays the loaded dataset"
-        self.newTabelWindow = tableWindow(self)
+        """
+        Sets the tab that displays the dataset
+
+        """
+
+        self.newTabelWindow = viewDatasetWidget(self)
         self.newTabelWindow.setWindowTitle("UIWindow")
-        if classes.selectedDataset is not None:
-            self.newTabelWindow.loadDataset(classes.selectedDataset)
         return self.newTabelWindow
     
     def createTabs(self):
+        """
+        Creates a tap widget and creates two tap
+        The first tab displays the dashboard creation tap
+        The second tab displays the dataset view page
+        """
         self.tabs = QTabWidget()
         self.tabs.setTabPosition(QTabWidget.TabPosition.West)
         self.tabs.addTab(self.calculateTab(), "calculate")
@@ -73,7 +81,7 @@ class stat_app(QMainWindow):
 
     def create_menu(self):
         """
-        Creates the main menu of the program
+        Creates the main menu of the program and adds it to the mainFrame.
         """
         menu = QMenuBar(self)
         
@@ -91,6 +99,7 @@ class stat_app(QMainWindow):
 
 
         file_menu = menu.addMenu("&File")
+
         file_menu.addAction(save_file_action)
         file_menu.addAction(load_file_action)
         file_menu.addAction(load_csv_action)
@@ -99,7 +108,7 @@ class stat_app(QMainWindow):
 
     def loadFile(self):
         """
-        Loads your process
+        Loads a save file of the pythonstat app
         """
         fileName = QFileDialog.getOpenFileName(self, 'Opened file')
         if fileName[0] == "":
@@ -114,7 +123,7 @@ class stat_app(QMainWindow):
                 self.tabs.deleteLater()
                 self.tabs = None
             self.createTabs()
-            self.fundament.setState(savedState['createdWidgets'])
+        self.fundament.setState(savedState['createdWidgets'])
 
     def saveFile(self):
         """
@@ -156,10 +165,6 @@ class stat_app(QMainWindow):
                 self.tabs.deleteLater()
                 self.tabs = None
             self.createTabs()
-
-
-
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
