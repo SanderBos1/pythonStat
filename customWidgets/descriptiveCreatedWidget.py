@@ -7,75 +7,92 @@ class descriptiveCreatedWidget(QWidget):
     """
     Creates a widget that contains the following elements:
 
-        functionLabel = A label that display which function is calculated when a label is droped into this widget
-        DeleteButton = When pressed, removes the widget from the window
-        columnLabel = Displays on which column of the dataset the function is calculated
-        calculationAnswerLabel = Displays the answer of the calculation.
+    functionLabel: A label that displays which function is calculated when a label is dropped into this widget.
+    DeleteButton: When pressed, removes the widget from the window.
+    columnLabel: Displays on which column of the dataset the function is calculated.
+    answerLabel: Displays the answer of the calculation.
 
-        Accepts drag events
+    Accepts drag events.
     """
-    def __init__(self, text, function, answer, *args, **kwargs):
+    def __init__(self, text, function, position, answer = "", column = "No column Selected", *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.startText = "No column Selected"
 
         self.function = function
         self.text = text
-        self.column = self.startText
+        self.column = column
         self.answer = answer
+        self.position = position
 
-        self.widgetLayout = QHBoxLayout()
+        self.widgetLayout = QVBoxLayout()
+        self.informationLayout = QHBoxLayout()
 
+        self.interactionLayout = QHBoxLayout()
+        self.interactionLayout.addStretch(1)
 
 
         deleteButton = QPushButton()
-        deleteButton.setText("Remove")      
+        deleteButton.setText("X")      
         deleteButton.setIcon(QIcon("close.png"))
         deleteButton.clicked.connect(self.deleteElement)
 
         self.columnLabel = chosenColumnLabel(self.calculateFunction)
-        self.columnLabel.setText(self.startText)
+        self.columnLabel.setText(self.column)
 
+        self.functionLabel = QLabel()
+        self.functionLabel.setText(self.text)
 
         
         self.answerLabel = QLabel()
+        self.answerLabel.setText(self.answer)
         
-        self.widgetLayout.addWidget(self.columnLabel)
+        self.informationLayout.addWidget(self.functionLabel)
+        self.informationLayout.addWidget(self.columnLabel)
+        self.informationLayout.addWidget(self.answerLabel)
+        self.interactionLayout.addWidget(deleteButton)
 
-        self.widgetLayout.addWidget(self.answerLabel)
-        self.widgetLayout.addWidget(deleteButton)
+        self.widgetLayout.addLayout(self.interactionLayout)
+        self.widgetLayout.addLayout(self.informationLayout)
 
         self.setLayout(self.widgetLayout)
 
-        self.setSizePolicy(
-            QSizePolicy.Policy.Maximum,
-            QSizePolicy.Policy.Maximum
-        )
-
-    def getInfo(self):
-        return [self.text, self.column]
+    def getPosition(self):
+        return self.position
+    
+    def setPosition(self, position):
+        self.position = position
 
     def getData(self):
         """ 
-        Returns all information needed to recreate the object
+        Returns all information needed to recreate a descriptiveWidget
+        Returns:
+            A dictionary containing:
+                function: The function that is associated with this widget
+                Text: The name that is given to the widget, usually the function name
+                Column: The dataset column that is associated with it
+                Answer: If their is already a calculation made, its answer will be saved here
+                Type: A string so that the program can read which widget has to be created.
+
         """
+
         return {
             "function":self.function, 
             "text": self.text,
             "column":self.column, 
             "answer": self.answer,
-            "position": [int(self.x()), int(self.y())]
+            "type": "descriptive"
         }
     
     def deleteElement(self):
         """Function to delete the widget"""
         self.deleteLater()
 
-    #function that sets the text of the drag column
+    #function that calculate and sets the answer
     def calculateFunction(self):
         self.column = self.columnLabel.getText()
         answer = self.function(self.columnLabel.getText())
         self.answerLabel.setText(str(answer))
+        self.answer = str(answer)
 
     #Defines what happens when the widget is dragged
 
@@ -89,8 +106,3 @@ class descriptiveCreatedWidget(QWidget):
 
 
             drag.exec(Qt.DropAction.MoveAction)
-    
-    
-    #Defines a hint of the size of the widget, can be compined with Qsizepolicy to determine how large the widget will be
-    def sizeHint(self):
-        return QSize(40,120)

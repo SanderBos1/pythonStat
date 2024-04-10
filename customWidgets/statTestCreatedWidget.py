@@ -7,67 +7,75 @@ class statTestCreatedWidget(QWidget):
     """
     Creates a widget that contains the following elements:
 
-        functionLabel = A label that display which function is calculated when a label is droped into this widget
-        DeleteButton = When pressed, removes the widget from the window
-        columnLabel = Displays on which column of the dataset the function is calculated
-        calculationAnswerLabel = Displays the answer of the calculation.
+    functionLabel: A label that displays which function is calculated when a label is dropped into this widget.
+    DeleteButton: When pressed, removes the widget from the window.
+    columnLabel: Displays one of the columns  of the dataset on which column the function is calculated.
+    columnLabel2: Displays one of the columns  of the dataset on which column the function is calculated.
+    answerLabel: Displays the answer of the calculation.
 
-        Accepts drag events
+    Accepts drag events.
     """
-    def __init__(self, name, function, *args, **kwargs):
+    def __init__(self, name, function, position, column = "No column Selected", column2 = "No column Selected", answer= "",  *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        self.startText = "No column Selected"
-
         self.name = name
         self.function = function
-        self.column = self.startText 
-        self.column2 = self.startText 
-        self.answer = ""
+        self.column = column
+        self.column2 = column2
+        self.answer = answer
+        self.position = position
 
-        self.widgetLayout = QHBoxLayout()
+        self.widgetLayout = QVBoxLayout()
+        
+        self.informationLayout = QHBoxLayout()
 
+        self.interactionLayout = QHBoxLayout()
+        self.interactionLayout.addStretch(1)
 
+        self.functionLabel = QLabel()
+        self.functionLabel.setText(self.name)
 
         deleteButton = QPushButton()
-        deleteButton.setText("Remove")      
-        deleteButton.setIcon(QIcon("close.png"))
+        deleteButton.setText("X")      
         deleteButton.clicked.connect(self.deleteElement)
 
         self.columnLabel = chosenColumnLabel(self.calculateFunction)
-        self.columnLabel.setText(self.startText )
+        self.columnLabel.setText(self.column )
 
         self.columnLabel2 = chosenColumnLabel(self.calculateFunction)
-        self.columnLabel2.setText(self.startText )
+        self.columnLabel2.setText(self.column2)
         
         self.answerLabel = QLabel()
-        
-        self.widgetLayout.addWidget(self.columnLabel)
-        self.widgetLayout.addWidget(self.columnLabel2)
+        self.answerLabel.setText(answer)
 
-        self.widgetLayout.addWidget(self.answerLabel)
-        self.widgetLayout.addWidget(deleteButton)
+        self.informationLayout.addWidget(self.functionLabel)
+        self.informationLayout.addWidget(self.columnLabel)
+        self.informationLayout.addWidget(self.columnLabel2)
+        self.informationLayout.addWidget(self.answerLabel)
+        self.interactionLayout.addWidget(deleteButton)
+
+        self.widgetLayout.addLayout(self.interactionLayout)
+        self.widgetLayout.addLayout(self.informationLayout)
 
         self.setLayout(self.widgetLayout)
 
-        self.setSizePolicy(
-            QSizePolicy.Policy.Maximum,
-            QSizePolicy.Policy.Maximum
-        )
-
-    def getInfo(self):
-        return [self.columnLabel.getText() , self.columnLabel2.getText()]
+    def getPosition(self):
+        return self.position
+    
+    def setPosition(self, position):
+        self.position = position
 
     def getData(self):
         """ 
         Returns all information needed to recreate the object
         """
         return {
+            "text": self.name,
             "function":self.function, 
             "column":self.columnLabel.getText(), 
             "column2": self.columnLabel2.getText(),
             "answer": self.answer,
-            "position": [int(self.x()), int(self.y())]
+            "position": self.position,
+            "type": "statTest"
         }
     
     def deleteElement(self):
@@ -76,10 +84,10 @@ class statTestCreatedWidget(QWidget):
 
     #function that sets the text of the drag column
     def calculateFunction(self):
-        if self.columnLabel.getText() != self.startText and self.columnLabel2.getText() != self.startText :
+        if self.columnLabel.getText() != "No column Selected" and self.columnLabel2.getText() != "No column Selected" :
             answer = self.function(self.columnLabel.getText(), self.columnLabel2.getText())
             self.answerLabel.setText(str(answer))
-            self.answer = answer
+            self.answer = str(answer)
     #Defines what happens when the widget is dragged
 
     def mouseMoveEvent(self, e):
@@ -94,6 +102,4 @@ class statTestCreatedWidget(QWidget):
             drag.exec(Qt.DropAction.MoveAction)
     
     
-    #Defines a hint of the size of the widget, can be compined with Qsizepolicy to determine how large the widget will be
-    def sizeHint(self):
-        return QSize(40,120)
+
