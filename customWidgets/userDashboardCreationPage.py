@@ -9,7 +9,6 @@ class userDashboardCreationPage(QWidget):
 
         self.toolsLayout = QVBoxLayout()
         self.columnLayout = QVBoxLayout()
-        self.infoLayout =  QVBoxLayout()
 
         pageLayout = QHBoxLayout()
 
@@ -19,7 +18,6 @@ class userDashboardCreationPage(QWidget):
         pageLayout.addLayout(self.toolsLayout, 1)
         pageLayout.addLayout(self.columnLayout, 1)
         pageLayout.addWidget(self.userDashboard, 6)    
-        pageLayout.addLayout(self.infoLayout, 1)    
 
         self.setLayout(pageLayout)
         self.createDescriptiveButtons()

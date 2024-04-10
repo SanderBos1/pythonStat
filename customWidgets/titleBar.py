@@ -17,6 +17,7 @@ class CustomTitleBar(QWidget):
         title_bar_layout.setContentsMargins(1, 1, 1, 1)
         title_bar_layout.setSpacing(2)
 
+        self.setMaximumHeight(25)
 
         self.title = QLabel(f"{self.__class__.__name__}", self)
         self.title.setStyleSheet(

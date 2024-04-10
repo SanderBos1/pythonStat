@@ -14,8 +14,8 @@ class descriptiveCreatedWidget(QWidget):
 
     Accepts drag events.
     """
-    def __init__(self, text, function, position, answer = "", column = "No column Selected", *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, text, function, position, answer = "", column = "No column Selected", parent=None):
+        super(descriptiveCreatedWidget, self).__init__(parent)
 
 
         self.function = function
@@ -55,6 +55,9 @@ class descriptiveCreatedWidget(QWidget):
         self.widgetLayout.addLayout(self.informationLayout)
 
         self.setLayout(self.widgetLayout)
+
+        #layout
+        self.setMaximumHeight(200)
 
     def getPosition(self):
         return self.position

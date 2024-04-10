@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout
+from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QScrollArea, QPushButton
 from customWidgets import descriptiveCreatedWidget
 from customWidgets.statTestCreatedWidget import statTestCreatedWidget
 from PyQt6.QtCore import Qt
@@ -8,12 +8,21 @@ class userDashboard(QWidget):
         super(userDashboard, self).__init__(*args, **kwargs)
         self.setAcceptDrops(True)
         self.createdWidgets = []
-        self.userDashboardLayout = QHBoxLayout()
-        self.insertedWidgetLayout = QVBoxLayout()
 
-        self.userDashboardLayout.addLayout(self.insertedWidgetLayout)
+        
+        self.scrollArea = QScrollArea()
+        self.scrollArea.setWidgetResizable(True)  # Allow the scroll area to resize its contents dynamically
 
-        self.setLayout(self.userDashboardLayout)
+        # Create a placeholder widget to hold the scrollable content
+        scrollPlaceholder = QWidget()
+        self.scrollArea.setWidget(scrollPlaceholder)
+
+        # Create a layout for the scrollable content
+        self.scrollLayout = QVBoxLayout(scrollPlaceholder)
+
+        # Set up the layout for the userDashboard widget
+        dashboardLayout = QHBoxLayout(self)
+        dashboardLayout.addWidget(self.scrollArea)
 
     def getState(self):
         """
@@ -56,18 +65,18 @@ class userDashboard(QWidget):
         widget = e.source()
         if isinstance(widget, descriptiveCreatedWidget):        
             position = e.position()
-            self.insertedWidgetLayout.removeWidget(widget)
-            for n in range(self.insertedWidgetLayout.count()):
-                w = self.insertedWidgetLayout.itemAt(n).widget()
+            self.scrollLayout.removeWidget(widget)
+            for n in range(self.scrollLayout.count()):
+                w = self.scrollLayout.itemAt(n).widget()
                 if position.y() < w.y():
                     break
             else:
                 n+=1
-            self.insertedWidgetLayout.insertWidget(n, widget)
+            self.scrollLayout.insertWidget(n, widget)
             widget.setPosition(n)
             
-            for n in range(self.insertedWidgetLayout.count()):
-                w = self.insertedWidgetLayout.itemAt(n).widget()
+            for n in range(self.scrollLayout.count()):
+                w = self.scrollLayout.itemAt(n).widget()
                 w.setPosition(n)
             e.accept()
 
@@ -90,8 +99,11 @@ class userDashboard(QWidget):
             label = descriptiveCreatedWidget(name, function, position)
         else:
             label = descriptiveCreatedWidget(name, function, position, answer, column)
+        label.setStyleSheet(
+            "border: solid 1px black"
+        )
         self.createdWidgets.append(label)
-        self.insertedWidgetLayout.addWidget(label)
+        self.scrollLayout.addWidget(label)
   
 
 
@@ -118,4 +130,4 @@ class userDashboard(QWidget):
             
         self.createdWidgets.append(label)
         
-        self.insertedWidgetLayout.addWidget(label)
+        self.scrollLayout.addWidget(label)

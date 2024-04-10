@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QApplication, QFileDialog, QWidget, QVBoxLayout, QTabWidget, QMainWindow, QMenuBar, QTextEdit
+from PyQt6.QtWidgets import QApplication, QFileDialog, QWidget, QVBoxLayout, QTabWidget, QMainWindow, QMenuBar
 from PyQt6.QtGui import QAction
 from PyQt6.QtCore import Qt
 import pandas as pd
@@ -36,7 +36,6 @@ class stat_app(QMainWindow):
 
         mainAppLayout.addWidget(self.titleBar)
         mainAppLayout.addLayout(self.mainFrame)
-        mainAppLayout.addStretch()
         mainApp.setLayout(mainAppLayout)
 
         self.setCentralWidget(mainApp)
@@ -168,11 +167,7 @@ class stat_app(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-
-    with open('styles/styles.qss', 'r') as f:
-        style = f.read()
-        # Set the stylesheet of the application
-        app.setStyleSheet(style)
+    app.setStyleSheet(open("styles/styles.qss").read())
 
     my_app = stat_app()
     my_app.show()
