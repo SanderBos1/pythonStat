@@ -5,7 +5,7 @@ import pandas as pd
 import pickle
 import sys
 import os
-from customWidgets import CustomTitleBar, userDashboardCreationPage, viewDatasetWidget
+from customWidgets import CustomTitleBar, canvasCreationPage, viewDatasetWidget
 import classes
 from classes import userDataset
 
@@ -51,7 +51,7 @@ class stat_app(QMainWindow):
         """
         Creates the tab where the widgets that user create are placed.
         """
-        self.fundament = userDashboardCreationPage()
+        self.fundament = canvasCreationPage()
         return self.fundament
 
 

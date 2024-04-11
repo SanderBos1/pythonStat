@@ -1,11 +1,14 @@
-from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QScrollArea, QPushButton
-from customWidgets import descriptiveCreatedWidget
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QScrollArea
+from customWidgets import descriptiveWidget
 from customWidgets.statTestCreatedWidget import statTestCreatedWidget
 from PyQt6.QtCore import Qt
 
-class userDashboard(QWidget):
+class userCanvas(QWidget):
+    """
+    Creates the widget where user created widgets are placed & their corresponding interactions
+    """
     def __init__(self,  *args, **kwargs):
-        super(userDashboard, self).__init__(*args, **kwargs)
+        super(userCanvas, self).__init__(*args, **kwargs)
         self.setAcceptDrops(True)
         self.createdWidgets = []
 
@@ -19,6 +22,8 @@ class userDashboard(QWidget):
 
         # Create a layout for the scrollable content
         self.scrollLayout = QVBoxLayout(scrollPlaceholder)
+        #makes sure widgets are added at the top
+        self.scrollLayout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         # Set up the layout for the userDashboard widget
         dashboardLayout = QHBoxLayout(self)
@@ -44,9 +49,9 @@ class userDashboard(QWidget):
         """
         for createdWidget in createdWidgetsList:
             if createdWidget["type"] == "descriptive":
-                self.addDescriptiveLabel(createdWidget['text'], createdWidget['function'], createdWidget['answer'], createdWidget['column'])
+                self.addDescriptiveWidget(createdWidget['position'], createdWidget['column'])
             elif createdWidget["type"] == "statTest":
-                self.addStatLabel(createdWidget['text'], createdWidget['function'], createdWidget['column'], createdWidget['column2'],  createdWidget['answer'])
+                self.addStatLabel(createdWidget['position'], createdWidget['column'], createdWidget['column2'])
 
     def dragEnterEvent(self, e):
         """Lets the widget accept drag events"""
@@ -63,7 +68,7 @@ class userDashboard(QWidget):
         Then it resets the positions to remember the order in which the widgets are placed.
         """
         widget = e.source()
-        if isinstance(widget, descriptiveCreatedWidget):        
+        if isinstance(widget, descriptiveWidget):        
             position = e.position()
             self.scrollLayout.removeWidget(widget)
             for n in range(self.scrollLayout.count()):
@@ -80,34 +85,20 @@ class userDashboard(QWidget):
                 w.setPosition(n)
             e.accept()
 
-    def addDescriptiveLabel(self, name, function, answer = None, column = None):
+    def addDescriptiveWidget(self, position=None, column = "No column selected"):
 
-        """
-        Adds a descriptive label to the user dashboard.
-        It has the following parameters:
+        if position == None:
+            position = len(self.createdWidgets)
+        
+        
+        label = descriptiveWidget(position, column)
 
-        name: The name of the function associated with this label.
-        function: The actual function associated with this label.
-        position: Where it is placed in the array of widgets.
-
-        Optional parameters:
-        column: Sets the text of the label which displays which column is associated with it.
-        answer: Sets the text of the label which displays the results of the calculation.
-        """
-        position = len(self.createdWidgets)
-        if answer == None and column == None:
-            label = descriptiveCreatedWidget(name, function, position)
-        else:
-            label = descriptiveCreatedWidget(name, function, position, answer, column)
-        label.setStyleSheet(
-            "border: solid 1px black"
-        )
         self.createdWidgets.append(label)
         self.scrollLayout.addWidget(label)
   
 
 
-    def addStatLabel(self, name,  function, column = None, column2 = None, answer = None):
+    def addStatLabel(self, position = None, column = "No column Selected", column2 = "No column Selected"):
 
         """
         Adds a stat label to the user dashboard.
@@ -122,11 +113,10 @@ class userDashboard(QWidget):
             column2: Sets the text of the second label which displays which column is associated with it.
             answer: Sets the text of the label which displays the results of the calculation.
         """
-        position = len(self.createdWidgets)
-        if answer == None and column == None and column2 == None:
-            label = statTestCreatedWidget(name, function, position)
-        else:
-            label = statTestCreatedWidget(name, function, position, column, column2, answer)
+        if position == None:
+            position = len(self.createdWidgets)
+        
+        label = statTestCreatedWidget(position, column, column2)
             
         self.createdWidgets.append(label)
         

@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 from customWidgets.chosenColumnLabel import chosenColumnLabel
-
+from statFunctions import ttest
 class statTestCreatedWidget(QWidget):
     """
     Creates a widget that contains the following elements:
@@ -15,13 +15,11 @@ class statTestCreatedWidget(QWidget):
 
     Accepts drag events.
     """
-    def __init__(self, name, function, position, column = "No column Selected", column2 = "No column Selected", answer= "",  *args, **kwargs):
+    def __init__(self, position, column = "No column Selected", column2 = "No column Selected", *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.name = name
-        self.function = function
+
         self.column = column
         self.column2 = column2
-        self.answer = answer
         self.position = position
 
         self.widgetLayout = QVBoxLayout()
@@ -30,9 +28,6 @@ class statTestCreatedWidget(QWidget):
 
         self.interactionLayout = QHBoxLayout()
         self.interactionLayout.addStretch(1)
-
-        self.functionLabel = QLabel()
-        self.functionLabel.setText(self.name)
 
         deleteButton = QPushButton()
         deleteButton.setText("X")      
@@ -44,19 +39,26 @@ class statTestCreatedWidget(QWidget):
         self.columnLabel2 = chosenColumnLabel(self.calculateFunction)
         self.columnLabel2.setText(self.column2)
         
-        self.answerLabel = QLabel()
-        self.answerLabel.setText(answer)
+        pvalueLayout = QVBoxLayout()
+        pvalueLabel = QLabel("p value")
+        self.pvalueanswerLabel = QLabel()
+        pvalueLayout.addWidget(pvalueLabel)
+        pvalueLayout.addWidget(self.pvalueanswerLabel)
 
-        self.informationLayout.addWidget(self.functionLabel)
         self.informationLayout.addWidget(self.columnLabel)
         self.informationLayout.addWidget(self.columnLabel2)
-        self.informationLayout.addWidget(self.answerLabel)
+        self.informationLayout.addLayout(pvalueLayout)
         self.interactionLayout.addWidget(deleteButton)
 
         self.widgetLayout.addLayout(self.interactionLayout)
         self.widgetLayout.addLayout(self.informationLayout)
 
         self.setLayout(self.widgetLayout)
+    
+        if self.columnLabel.getText() != "No column Selected" and self.columnLabel2.getText() != "No column Selected" :
+            self.calculateFunction()
+
+        self.setMaximumHeight(200)
 
     def getPosition(self):
         return self.position
@@ -69,11 +71,8 @@ class statTestCreatedWidget(QWidget):
         Returns all information needed to recreate the object
         """
         return {
-            "text": self.name,
-            "function":self.function, 
             "column":self.columnLabel.getText(), 
             "column2": self.columnLabel2.getText(),
-            "answer": self.answer,
             "position": self.position,
             "type": "statTest"
         }
@@ -82,14 +81,18 @@ class statTestCreatedWidget(QWidget):
         """Function to delete the widget"""
         self.deleteLater()
 
-    #function that sets the text of the drag column
     def calculateFunction(self):
+        """
+        When a column is dropped into the widget it executes this function.
+        First it checks if it has two chosen columns
+        Than it calculates the ttest p value and sets a label with the answer
+        """
         if self.columnLabel.getText() != "No column Selected" and self.columnLabel2.getText() != "No column Selected" :
-            answer = self.function(self.columnLabel.getText(), self.columnLabel2.getText())
-            self.answerLabel.setText(str(answer))
-            self.answer = str(answer)
-    #Defines what happens when the widget is dragged
+            answer = ttest(self.columnLabel.getText(), self.columnLabel2.getText())
+            self.pvalueanswerLabel.setText(str(answer))
 
+
+    #Defines what happens when the widget is dragged
     def mouseMoveEvent(self, e):
         if e.buttons() == Qt.MouseButton.LeftButton:
             drag = QDrag(self)
