@@ -68,8 +68,9 @@ class userCanvas(QWidget):
 
         Then it resets the positions to remember the order in which the widgets are placed.
         """
+        allowed = [descriptiveWidget, ttestWidget, normalityWidget]
         widget = e.source()
-        if isinstance(widget, descriptiveWidget):        
+        if any(isinstance(widget, allowedWidget) for allowedWidget in allowed):        
             position = e.position()
             self.scrollLayout.removeWidget(widget)
             for n in range(self.scrollLayout.count()):
