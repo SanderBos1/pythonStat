@@ -43,7 +43,7 @@ class normalityWidget(QWidget):
 
         self.informationLayout.addWidget(self.columnLabel)
         self.informationLayout.addLayout(pvalueLayout)
-        
+
         self.interactionLayout.addWidget(functionlabel)
         self.interactionLayout.addWidget(deleteButton)
 
@@ -91,7 +91,7 @@ class normalityWidget(QWidget):
         self.column = self.columnLabel.getText()
         answer = normalTest(self.column)
         if not isinstance(answer, str):
-            self.pvalueanswerLabel.setText(str(answer.pvalue))
+            self.pvalueanswerLabel.setText(str(answer['pValue']))
         else:
             self.pvalueanswerLabel.setText(answer)
 

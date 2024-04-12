@@ -18,7 +18,8 @@ class stat_app(QMainWindow):
     """
     def __init__(self):
         super().__init__()
-
+        
+        self.extension = ".pyStat"
 
         self.setWindowTitle("Stat program")
 
@@ -109,11 +110,11 @@ class stat_app(QMainWindow):
         """
         Loads a save file of the pythonstat app
         """
-        fileName = QFileDialog.getOpenFileName(self, 'Opened file')
-        if fileName[0] == "":
+        fileName, _ = QFileDialog.getOpenFileName(self, filter="pyStat Files (*" + self.extension + ");;")
+        if fileName == "":
             print("no name was selected")
         else:
-            with open(fileName[0] , 'rb') as f:
+            with open(fileName , 'rb') as f:
                 savedState = pickle.load(f)
             classes.selectedDataset = savedState['dataset']
 
@@ -127,17 +128,20 @@ class stat_app(QMainWindow):
     def saveFile(self):
         """
         Saves your process
+        @extension: determines the extension of the file
         """
-        fileName = QFileDialog.getSaveFileName(self, 'Save File')
-        if fileName[0] == "":
+        fileName, _ = QFileDialog.getSaveFileName(self,  filter="pyStat Files (*" + self.extension + ");;")
+        if fileName == "":
             print("no name was selected")
         else:
+            if not fileName.endswith(self.extension):
+                fileName += self.extension
             createdWidgets = self.fundament.getState()
             saveState = {
                 "dataset" : classes.selectedDataset,
                 "createdWidgets" : createdWidgets
             }
-            saveFile = open(f"{fileName[0]}", 'wb')
+            saveFile = open(f"{fileName}", 'wb')
             pickle.dump(saveState, saveFile)
             saveFile.close()
 

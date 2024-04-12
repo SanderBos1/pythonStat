@@ -108,8 +108,8 @@ class ttestWidget(QWidget):
         if self.columnLabel.getText() != "No column Selected" and self.columnLabel2.getText() != "No column Selected" :
             answer = ttest(self.columnLabel.getText(), self.columnLabel2.getText(), self.choiceVariance.currentText())
             if not isinstance(answer, str):
-                self.testValueanswerLabel.setText(str(answer.statistic))
-                self.pvalueanswerLabel.setText(str(answer.pvalue))
+                self.testValueanswerLabel.setText(answer['testStatistic'])
+                self.pvalueanswerLabel.setText((answer['pValue']))
             else:
                 self.pvalueanswerLabel.setText(str(answer))
                 self.testValueanswerLabel.setText(str(answer))
