@@ -86,6 +86,8 @@ class descriptiveWidget(QWidget):
         deleteButton.setIcon(QIcon("close.png"))
         deleteButton.clicked.connect(self.deleteElement)
 
+        functionlabel = QLabel("Descriptive Functions")
+
         self.columnLabel = chosenColumnLabel(self.calculateFunction)
         self.columnLabel.setText(self.column)
         
@@ -100,7 +102,7 @@ class descriptiveWidget(QWidget):
         self.informationLayout.addLayout(maxLayout)
         self.informationLayout.addLayout(countLayout)
 
-
+        self.interactionLayout.addWidget(functionlabel)
         self.interactionLayout.addWidget(deleteButton)
 
         self.widgetLayout.addLayout(self.interactionLayout)
@@ -109,7 +111,7 @@ class descriptiveWidget(QWidget):
         self.setLayout(self.widgetLayout)
 
         #layout
-        self.setMaximumHeight(200)
+        self.setMaximumHeight(250)
         if self.column != "No column selected":
             self.calculateFunction()
 

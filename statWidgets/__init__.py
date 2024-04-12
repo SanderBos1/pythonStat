@@ -1,0 +1,3 @@
+from statWidgets.descriptiveWidget import descriptiveWidget
+from statWidgets.normalitywidget import normalityWidget
+from statWidgets.ttestWidget import ttestWidget

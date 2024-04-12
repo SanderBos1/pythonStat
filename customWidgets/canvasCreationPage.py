@@ -51,12 +51,16 @@ class canvasCreationPage(QWidget):
         descriptiveButton.clicked.connect(lambda: self.userDashboard.addDescriptiveWidget())
 
         ttestButton = QPushButton("Ttest")
-        ttestButton.clicked.connect(lambda: self.userDashboard.addStatLabel())
+        ttestButton.clicked.connect(lambda: self.userDashboard.addTtestWidget())
+
+        normalityButton = QPushButton("normality Test")
+        normalityButton.clicked.connect(lambda: self.userDashboard.addNormalityWidget())
 
         self.toolsLayout.addWidget(titleLabel, 0, 0)
         self.toolsLayout.addWidget(descriptiveButton, 1, 0)
         self.toolsLayout.addWidget(ttestButton, 1, 1)
-  
+        self.toolsLayout.addWidget(normalityButton, 2, 0)
+
 
 
     def showColumns(self):

@@ -3,7 +3,7 @@ from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 from customWidgets.chosenColumnLabel import chosenColumnLabel
 from statFunctions import ttest
-class statTestCreatedWidget(QWidget):
+class ttestWidget(QWidget):
     """
     Creates a widget that contains the following elements:
 
@@ -32,22 +32,40 @@ class statTestCreatedWidget(QWidget):
         deleteButton = QPushButton()
         deleteButton.setText("X")      
         deleteButton.clicked.connect(self.deleteElement)
+        functionlabel = QLabel("T-test")
 
         self.columnLabel = chosenColumnLabel(self.calculateFunction)
         self.columnLabel.setText(self.column )
 
         self.columnLabel2 = chosenColumnLabel(self.calculateFunction)
         self.columnLabel2.setText(self.column2)
-        
+
+        self.choiceVariance = QComboBox()
+        self.choiceVariance.addItems(["True", "False"])
+        self.choiceVariance.currentTextChanged.connect(self.calculateFunction)
+
+        #sets the two labels that handle the p-value answer and display
         pvalueLayout = QVBoxLayout()
         pvalueLabel = QLabel("p value")
         self.pvalueanswerLabel = QLabel()
         pvalueLayout.addWidget(pvalueLabel)
         pvalueLayout.addWidget(self.pvalueanswerLabel)
 
+        #sets the two labels that handle the testStatistic & it's value and adds them to the display
+        testValueLayout = QVBoxLayout()
+        testValueLabel = QLabel("test Value")
+        self.testValueanswerLabel = QLabel()
+        testValueLayout.addWidget(testValueLabel)
+        testValueLayout.addWidget(self.testValueanswerLabel)
+
+        #adss all layouts and widgets to the main information layout
+        self.informationLayout.addWidget(self.choiceVariance)
         self.informationLayout.addWidget(self.columnLabel)
         self.informationLayout.addWidget(self.columnLabel2)
         self.informationLayout.addLayout(pvalueLayout)
+        self.informationLayout.addLayout(testValueLayout)
+
+        self.interactionLayout.addWidget(functionlabel)
         self.interactionLayout.addWidget(deleteButton)
 
         self.widgetLayout.addLayout(self.interactionLayout)
@@ -58,7 +76,7 @@ class statTestCreatedWidget(QWidget):
         if self.columnLabel.getText() != "No column Selected" and self.columnLabel2.getText() != "No column Selected" :
             self.calculateFunction()
 
-        self.setMaximumHeight(200)
+        self.setMaximumHeight(250)
 
     def getPosition(self):
         return self.position
@@ -88,9 +106,13 @@ class statTestCreatedWidget(QWidget):
         Than it calculates the ttest p value and sets a label with the answer
         """
         if self.columnLabel.getText() != "No column Selected" and self.columnLabel2.getText() != "No column Selected" :
-            answer = ttest(self.columnLabel.getText(), self.columnLabel2.getText())
-            self.pvalueanswerLabel.setText(str(answer))
-
+            answer = ttest(self.columnLabel.getText(), self.columnLabel2.getText(), self.choiceVariance.currentText())
+            if not isinstance(answer, str):
+                self.testValueanswerLabel.setText(str(answer.statistic))
+                self.pvalueanswerLabel.setText(str(answer.pvalue))
+            else:
+                self.pvalueanswerLabel.setText(str(answer))
+                self.testValueanswerLabel.setText(str(answer))
 
     #Defines what happens when the widget is dragged
     def mouseMoveEvent(self, e):

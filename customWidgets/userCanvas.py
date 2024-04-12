@@ -1,6 +1,5 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QScrollArea
-from customWidgets import descriptiveWidget
-from customWidgets.statTestCreatedWidget import statTestCreatedWidget
+from statWidgets import descriptiveWidget, ttestWidget, normalityWidget
 from PyQt6.QtCore import Qt
 
 class userCanvas(QWidget):
@@ -51,7 +50,9 @@ class userCanvas(QWidget):
             if createdWidget["type"] == "descriptive":
                 self.addDescriptiveWidget(createdWidget['position'], createdWidget['column'])
             elif createdWidget["type"] == "statTest":
-                self.addStatLabel(createdWidget['position'], createdWidget['column'], createdWidget['column2'])
+                self.addTtestWidget(createdWidget['position'], createdWidget['column'], createdWidget['column2'])
+            elif createdWidget["type"] == "normal":
+                self.addNormalityWidget(createdWidget['position'], createdWidget['column'])
 
     def dragEnterEvent(self, e):
         """Lets the widget accept drag events"""
@@ -98,26 +99,33 @@ class userCanvas(QWidget):
   
 
 
-    def addStatLabel(self, position = None, column = "No column Selected", column2 = "No column Selected"):
+    def addTtestWidget(self, position = None, column = "No column Selected", column2 = "No column Selected"):
 
         """
         Adds a stat label to the user dashboard.
         It has the following parameters:
 
-        name: The name of the function associated with this label.
-        function: The actual function associated with this label.
         position: Where it is placed in the array of widgets.
 
         Optional parameters:
             column: Sets the text of the label which displays which column is associated with it.
             column2: Sets the text of the second label which displays which column is associated with it.
-            answer: Sets the text of the label which displays the results of the calculation.
         """
         if position == None:
             position = len(self.createdWidgets)
         
-        label = statTestCreatedWidget(position, column, column2)
+        label = ttestWidget(position, column, column2)
             
         self.createdWidgets.append(label)
+        self.scrollLayout.addWidget(label)
+
+    def addNormalityWidget(self, position=None, column = "No column selected"):
+
+        if position == None:
+            position = len(self.createdWidgets)
         
+        
+        label = normalityWidget(position, column)
+
+        self.createdWidgets.append(label)
         self.scrollLayout.addWidget(label)
